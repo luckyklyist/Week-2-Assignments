@@ -64,5 +64,39 @@ app.post('/signup', (req, res) => {
   }
 })
 
+app.post('/login', (req, res) => {
+  try {
+    const userInfo = req.body;
+    userData.map((user) => {
+      if (userInfo.username === user.username && userInfo.password === user.password) {
+        res.status(200).json({ "data": user })
+      }
+
+    })
+    console.log(userData)
+    res.status(404).json({ message: "User not found" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error" })
+
+  }
+})
+
+app.get('/data', (req, res) => {
+  console.log(req.headers);
+  try {
+    const userLoginData = req.headers;
+    userData.forEach((user) => {
+      if (user.username === userLoginData.username && user.password === userLoginData.password) {
+        res.status(200).json({ data: userData })
+      }
+    })
+    res.status(401).json({ "message": "Wrong credentials" })
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error" })
+  }
+})
+
 app.listen(PORT, () => console.log(`App running at the port ${PORT}`))
 module.exports = app;
