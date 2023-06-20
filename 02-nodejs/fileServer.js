@@ -19,18 +19,52 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-    
+const { encode } = require('punycode');
+
 const app = express();
 
-app.get('/files',(req,res)=>{
+const PORT = 3001;
+
+app.get('/files', (req, res) => {
   try {
-    
+    fs.readdir('./files', (err, files) => {
+      if (err) {
+        console.log("err", err);
+        return
+      }
+      let fileName = []
+      files.forEach((file) => {
+        fileName.push({ "filename": file })
+      })
+      res.status(200).json({ data: fileName })
+    })
   } catch (error) {
     console.log(error);
-    res.status(500).json({message:"error"})
-    
+    res.status(500).json({ message: "error" })
+
   }
 })
 
+app.get('/file/:filename', (req, res) => {
+  try {
+    const fileName = req.params.filename;
+    const filePath = path.join('./files/' + fileName);
+    let fileContent;
+    try {
+      fileContent = fs.readFileSync(filePath,'utf-8');
+    }
+    catch (err) {
+      console.log(error);
+      res.status(500).json({ "error": "Internal server error" });
+      return;
+    }
+    res.status(200).json({ "file_content": fileContent });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error" })
+  }
+})
+
+app.listen(PORT, () => console.log(`Server running at the port ${PORT}`))
 
 module.exports = app;
