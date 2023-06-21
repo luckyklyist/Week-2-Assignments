@@ -46,4 +46,29 @@ const app = express();
 
 app.use(bodyParser.json());
 
+let todo=[];
+
+app.get("/todos", (req, res) => {
+  try {
+    res.status(201).json({"todos":todo})
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:"error"})
+    
+  }
+})
+
+app.get("/todos/:id",(req,res)=>{
+  try {
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:"error"})
+  }
+})
+
+// put method 
+
+
+
 module.exports = app;
